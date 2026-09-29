@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Animal Friends MV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: #1b1b2f;
+            overflow: hidden;
+            font-family: 'Baloo 2', 'Comic Sans MS', cursive, sans-serif
+        }
+
+        #wrap {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px)
+        }
+
+        #stage {
+            position: relative;
+            width: min(100vw, calc((100vh - 46px) * 16 / 9));
+            aspect-ratio: 16/9;
+            container-type: size;
+            overflow: hidden;
+            background: linear-gradient(#5cc8ff, #bdf0ff 65%, #e9ffd0)
+        }
+
+        #stage>* {
+            position: absolute
+        }
+
+        .sun {
+            left: 4cqw;
+            top: 3cqw;
+            width: 12cqw;
+            height: 12cqw;
+            border-radius: 50%;
+            background: radial-gradient(#fff6a0, #ffd12e);
+            box-shadow: 0 0 0 2cqw #ffe36655, 0 0 0 4cqw #ffe36633;
+            animation: pulse 2s ease-in-out infinite
+        }
+
+        .sun:before {
+            content: "";
+            position: absolute;
+            inset: 3cqw;
+            border-radius: 50%;
+            box-shadow: inset 1cqw 0 0 #0000
+        }
+
+        .cloud {
+            font-size: 10cqw;
+            animation: drift linear infinite;
+            opacity: .95;
+            filter: drop-shadow(0 1cqw 0 #0001)
+        }
+
+        .hill {
+            left: -10cqw;
+            width: 120cqw;
+            border-radius: 50%
+        }
+
+        .h1 {
+            bottom: 8cqw;
+            height: 22cqw;
+            background: #7ed957;
+            z-index: 1
+        }
+
+        .h2 {
+            bottom: -20cqw;
+            height: 36cqw;
+            background: #4cc35a;
+            z-index: 6
+        }
+
+        .fl {
+            font-size: 5cqw;
+            z-index: 7;
+            bottom: 1cqw;
+            animation: sway 2s ease-in-out infinite;
+            transform-origin: bottom
+        }
+
+        .animal {
+            bottom: 14cqw;
+            width: 20cqw;
+            height: 22cqw;
+            z-index: 4;
+            transform-origin: 50% 100%;
+            left: var(--x);
+            transition: left .9s cubic-bezier(.3, 1.5, .5, 1), transform .9s cubic-bezier(.3, 1.5, .5, 1)
+        }
+
+        .animal.peek {
+            transform: translate(-50%, 72%) scale(.6)
+        }
+
+        .animal.sm {
+            transform: translate(-50%, 0) scale(.62)
+        }
+
+        .animal.ft {
+            left: 50%;
+            transform: translate(-50%, 0) scale(1.55);
+            z-index: 5
+        }
+
+        .in {
+            width: 100%;
+            height: 100%;
+            transform-origin: 50% 100%
+        }
+
+        .peek .in {
+            animation: peekb 1.4s ease-in-out infinite;
+            animation-delay: var(--d)
+        }
+
+        .sm .in {
+            animation: bob 1.3s ease-in-out infinite;
+            animation-delay: var(--d)
+        }
+
+        .ft .in {
+            animation: bob .7s ease-in-out infinite
+        }
+
+        .dance .in {
+            animation: dance .5s ease-in-out infinite !important;
+            animation-delay: var(--d) !important
+        }
+
+        .pop .in {
+            animation: jump .5s ease-out infinite !important
+        }
+
+        .animal svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible
+        }
+
+        .m {
+            transform-box: fill-box;
+            transform-origin: center
+        }
+
+        .talk .m {
+            animation: mouth .22s ease-in-out infinite alternate
+        }
+
+        .bub {
+            left: 50%;
+            top: -6cqw;
+            transform: translateX(-50%) scale(0);
+            background: #fff;
+            border: .4cqw solid #ff5fa2;
+            border-radius: 2cqw;
+            padding: .2cqw 1.6cqw;
+            font-size: 3.2cqw;
+            color: #ff3d8b;
+            white-space: nowrap;
+            transition: transform .25s cubic-bezier(.3, 1.8, .5, 1)
+        }
+
+        .bub:after {
+            content: "";
+            position: absolute;
+            left: 45%;
+            bottom: -1.3cqw;
+            border: 1cqw solid transparent;
+            border-top-color: #ff5fa2;
+            border-bottom: 0
+        }
+
+        .bub.on {
+            transform: translateX(-50%) scale(1)
+        }
+
+        .bee {
+            z-index: 9;
+            font-size: 8cqw;
+            transition: left 1.6s ease-in-out, top 1.6s ease-in-out
+        }
+
+        .bee span {
+            display: block;
+            animation: fly 1.2s ease-in-out infinite
+        }
+
+        #w {
+            left: 0;
+            right: 0;
+            bottom: 1.5cqw;
+            z-index: 10;
+            text-align: center;
+            line-height: 1;
+            pointer-events: none;
+            white-space: nowrap
+        }
+
+        #w span {
+            display: inline-block;
+            color: var(--c);
+            -webkit-text-stroke: .5cqw #fff;
+            paint-order: stroke fill;
+            text-shadow: 0 .6cqw 0 #0003;
+            animation: hop .8s ease-in-out infinite;
+            animation-delay: var(--dl)
+        }
+
+        #w .sp {
+            width: 2cqw
+        }
+
+        .fx {
+            z-index: 8;
+            font-size: 5cqw;
+            animation: rise 4s linear forwards;
+            pointer-events: none
+        }
+
+        .shake {
+            animation: shake .12s infinite
+        }
+
+        #ctl {
+            height: 46px;
+            width: min(100vw, calc((100vh - 46px) * 16 / 9));
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 14px
+        }
+
+        #ctl button,
+        #ctl label {
+            background: #ff5fa2;
+            color: #fff;
+            border: 0;
+            border-radius: 18px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font: inherit
+        }
+
+        #ctl input[type=range] {
+            flex: 1
+        }
+
+        #ov {
+            inset: 0;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0006;
+            color: #fff;
+            cursor: pointer;
+            font-size: 5cqw
+        }
+
+        #ov b {
+            font-size: 14cqw;
+            background: #ff5fa2;
+            border-radius: 50%;
+            width: 20cqw;
+            height: 20cqw;
+            line-height: 20cqw;
+            text-align: center;
+            animation: pulse 1s infinite
+        }
+
+        @keyframes pulse {
+            50% {
+                transform: scale(1.08)
+            }
+        }
+
+        @keyframes drift {
+            from {
+                left: -15cqw
+            }
+
+            to {
+                left: 110cqw
+            }
+        }
+
+        @keyframes sway {
+            50% {
+                transform: rotate(9deg)
+            }
+        }
+
+        @keyframes bob {
+            50% {
+                transform: translateY(-6%) scale(1.03, .97)
+            }
+        }
+
+        @keyframes peekb {
+            50% {
+                transform: translateY(-10%) rotate(4deg)
+            }
+        }
+
+        @keyframes dance {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-8deg)
+            }
+
+            50% {
+                transform: translateY(-22%) rotate(8deg) scale(1.05)
+            }
+        }
+
+        @keyframes jump {
+            0% {
+                transform: scale(1.1, .85)
+            }
+
+            50% {
+                transform: translateY(-28%) scale(.95, 1.15) rotate(6deg)
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        @keyframes mouth {
+            from {
+                transform: scaleY(.4)
+            }
+
+            to {
+                transform: scaleY(1.5)
+            }
+        }
+
+        @keyframes fly {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(-8deg)
+            }
+
+            50% {
+                transform: translate(2cqw, -2.5cqw) rotate(8deg)
+            }
+        }
+
+        @keyframes hop {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(-3deg)
+            }
+
+            50% {
+                transform: translateY(-1.6cqw) rotate(3deg) scale(1.08)
+            }
+        }
+
+        @keyframes rise {
+            from {
+                transform: translateY(0) rotate(0);
+                opacity: 1
+            }
+
+            to {
+                transform: translateY(-70cqw) rotate(360deg);
+                opacity: 0
+            }
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translate(.6cqw, .4cqw)
+            }
+
+            50% {
+                transform: translate(-.6cqw, -.4cqw)
+            }
+
+            100% {
+                transform: translate(.4cqw, -.6cqw)
+            }
+        }
+
+        .ask .in {
+            animation: tilt 1s ease-in-out infinite !important
+        }
+
+        .wave .in {
+            animation: tilt .45s ease-in-out infinite !important
+        }
+
+        @keyframes tilt {
+
+            0%,
+            100% {
+                transform: rotate(-9deg)
+            }
+
+            50% {
+                transform: rotate(9deg) translateY(-5%)
+            }
+        }
+
+        .bub {
+            font-size: 2.6cqw
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap">
+        <div id="stage">
+            <div class="sun"></div>
+            <div class="cloud" style="top:4cqw;animation-duration:38s">☁️</div>
+            <div class="cloud" style="top:14cqw;animation-duration:55s;animation-delay:-20s;font-size:7cqw">☁️</div>
+            <div class="hill h1"></div>
+            <div class="bee" id="bee"><span>🐝</span></div>
+            <div class="hill h2"></div>
+            <div id="w"></div>
+            <div id="ov"><b>▶</b>Animal Friends</div>
+        </div>
+        <div id="ctl"><button id="pp">▶</button><input type="range" id="sk" min="0" max="124" step="0.1" value="0"><span
+                id="tm">0:00</span>
+            <label>🎵 Chọn file nhạc<input type="file" id="af" accept="audio/*" hidden></label><button
+                id="fs">⛶</button>
+        </div>
+    </div>
+    <script>
+        const END = 124, st = document.getElementById('stage'), W = document.getElementById('w'), bee = document.getElementById('bee');
+        const eyes = (y = 45) => `<circle cx="36" cy="${y}" r="7" fill="#fff"/><circle cx="64" cy="${y}" r="7" fill="#fff"/><circle cx="37" cy="${y + 1}" r="3.6" fill="#222"/><circle cx="65" cy="${y + 1}" r="3.6" fill="#222"/><circle cx="38.5" cy="${y - 1}" r="1.2" fill="#fff"/><circle cx="66.5" cy="${y - 1}" r="1.2" fill="#fff"/>`;
+        const body = c => `<ellipse cx="50" cy="92" rx="26" ry="17" fill="${c}"/><ellipse cx="34" cy="106" rx="9" ry="5" fill="${c}"/><ellipse cx="66" cy="106" rx="9" ry="5" fill="${c}"/>`;
+        const cheeks = '<circle cx="27" cy="62" r="5" fill="#ff8fab" opacity=".7"/><circle cx="73" cy="62" r="5" fill="#ff8fab" opacity=".7"/>';
+        const A = [
+            { s: 'Woof! Woof!', x: 12, svg: body('#d9a066') + '<ellipse cx="18" cy="48" rx="12" ry="24" fill="#8d5524" transform="rotate(15 18 48)"/><ellipse cx="82" cy="48" rx="12" ry="24" fill="#8d5524" transform="rotate(-15 82 48)"/><circle cx="50" cy="50" r="34" fill="#e0aa72"/><circle cx="66" cy="42" r="12" fill="#a86a35"/><ellipse cx="50" cy="67" rx="19" ry="14" fill="#f8e3c6"/>' + eyes(42) + cheeks + '<ellipse cx="50" cy="58" rx="7" ry="5" fill="#333"/><ellipse class="m" cx="50" cy="73" rx="7" ry="4.5" fill="#d6304a"/><ellipse cx="50" cy="77" rx="4" ry="3" fill="#ff8fab"/>' },
+            { s: 'Meow! Meow!', x: 31, svg: body('#f5a13a') + '<polygon points="16,38 22,4 46,22" fill="#f5a13a"/><polygon points="84,38 78,4 54,22" fill="#f5a13a"/><polygon points="22,32 25,14 38,24" fill="#ff9db8"/><polygon points="78,32 75,14 62,24" fill="#ff9db8"/><circle cx="50" cy="52" r="34" fill="#f8b04c"/><path d="M50 20v10M40 22l3 8M60 22l-3 8" stroke="#d9791a" stroke-width="3" stroke-linecap="round"/>' + eyes(46) + cheeks + '<polygon points="45,58 55,58 50,64" fill="#ff5f8a"/><ellipse class="m" cx="50" cy="71" rx="6" ry="4" fill="#d6304a"/><path d="M8 58l20 4M8 68l20-2M92 58l-20 4M92 68l-20-2" stroke="#fff" stroke-width="1.8"/>' },
+            { s: 'Quack! Quack!', x: 50, svg: body('#ffd93b') + '<ellipse cx="22" cy="92" rx="10" ry="14" fill="#f5c400" transform="rotate(20 22 92)"/><path d="M42 12q8-14 16 0" stroke="#f5c400" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="50" cy="50" r="34" fill="#ffe14f"/>' + eyes(42) + cheeks + '<ellipse cx="50" cy="60" rx="17" ry="7" fill="#ffa62b"/><ellipse class="m" cx="50" cy="68" rx="13" ry="5" fill="#ff7f11"/>' },
+            { s: 'Moo! Moo!', x: 69, svg: body('#fff') + '<circle cx="38" cy="90" r="7" fill="#333"/><circle cx="62" cy="96" r="5" fill="#333"/><ellipse cx="14" cy="42" rx="14" ry="8" fill="#fff" stroke="#333" stroke-width="2" transform="rotate(-20 14 42)"/><ellipse cx="86" cy="42" rx="14" ry="8" fill="#fff" stroke="#333" stroke-width="2" transform="rotate(20 86 42)"/><path d="M28 22q-8-16 4-18M72 22q8-16-4-18" stroke="#e8b96a" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="50" cy="48" r="32" fill="#fff" stroke="#ddd" stroke-width="1"/><ellipse cx="68" cy="30" rx="12" ry="9" fill="#333"/>' + eyes(44) + '<ellipse cx="50" cy="66" rx="21" ry="14" fill="#ffb3c6"/><ellipse cx="42" cy="63" rx="3" ry="4" fill="#c2577a"/><ellipse cx="58" cy="63" rx="3" ry="4" fill="#c2577a"/><ellipse class="m" cx="50" cy="75" rx="7" ry="3.5" fill="#8b1e3f"/>' },
+            { s: 'Roar! Roar!', x: 88, svg: body('#f2b134') + '<path d="M84 96q20-4 12-26" stroke="#f2b134" stroke-width="5" fill="none"/><circle cx="96" cy="68" r="6" fill="#e67e22"/><circle cx="50" cy="50" r="46" fill="#e67e22"/><circle cx="10" cy="36" r="10" fill="#e67e22"/><circle cx="90" cy="36" r="10" fill="#e67e22"/><circle cx="20" cy="8" r="6" fill="#f5c04a"/><circle cx="80" cy="8" r="6" fill="#f5c04a"/><circle cx="50" cy="52" r="31" fill="#ffd166"/>' + eyes(46) + cheeks + '<ellipse cx="50" cy="66" rx="14" ry="10" fill="#fff0c2"/><polygon points="44,57 56,57 50,64" fill="#8b4513"/><ellipse class="m" cx="50" cy="73" rx="8" ry="5" fill="#d6304a"/>' }
+        ];
+        const INTRO = [18, 32, 47, 60, 75];
+        const ael = A.map((a, i) => {
+            const d = document.createElement('div'); d.className = 'animal peek'; d.style.setProperty('--x', a.x + '%'); d.style.setProperty('--d', (-i * .3) + 's');
+            d.innerHTML = `<div class="in"><svg viewBox="0 0 100 112">${a.svg}</svg></div><div class="bub">${a.s}</div>`; st.appendChild(d); a.b = d.querySelector('.bub'); return d
+        });
+        '🌸🌼🌷🌻🌺🌼🌷🌸🌻🌺🌼🌷🌸🌻'.match(/./gu).forEach((e, i) => { const f = document.createElement('div'); f.className = 'fl'; f.textContent = e; f.style.left = (i * 7.4 + 1) + '%'; f.style.animationDelay = (-i * .3) + 's'; st.appendChild(f) });
+        const AT = [[18, 23, 25, 28.5, 30.5, 32], [32, 38, 40, 43.5, 45.5, 47], [47, 53.5, 54.5, 57, 58.5, 60], [60, 67, 69.5, 72, 73.5, 75], [75, 81.5, 83, 85, 86, 90]], NM = ['DOGGY', 'KITTY', 'DUCKY', 'COW', 'LION'];
+        const S = [[0, 3, -1, 'ANIMAL FRIENDS', '', 's'], [3, 7, -1, 'HELLO!', '', 'n', 'dance'], [7, 11, -1, 'COME AND PLAY!', '', 'n', 'dance'], [11, 14.5, -1, 'CLAP! TAP!', '', 'c', 'dance'], [14.5, 18, -1, "LET'S PLAY!", '', 's', 'dance']];
+        AT.forEach((a, k) => { const so = A[k].s.toUpperCase(), L = k === 4; S.push([a[0], a[1], k, NM[k], '', 'n'], [a[1], a[2], k, 'HELLO!', 'Hello! 👋', 's', 'wave'], [a[2], a[3], k, so, A[k].s, 'n'], [a[3], a[4], k, 'SAY IT!', 'Can you say it? 🎤', 'n', 'ask'], [a[4], a[5], k, L ? 'ROAR!' : so, L ? 'ROAR!' : A[k].s, 's', L ? 'shake' : '']) });
+        S.push([90, 91, 0, 'WOOF!', 'Woof!', 'n'], [91, 93, 1, 'MEOW!', 'Meow!', 'n'], [93, 95, 2, 'QUACK!', 'Quack!', 'n'], [95, 97, 3, 'MOO!', 'Moo!', 'n'], [97, 99, 4, 'ROAR!', 'Roar!', 's'],
+            [99, 105, -2, 'WOOF! MEOW! QUACK! MOO! ROAR!', '', 'n', 'seq'], [105, 111, -2, 'ALL OUR ANIMAL FRIENDS!', '', 's', 'dance'], [111, 115, -2, 'CLAP! TAP!', '', 'c', 'dance'], [115, 119, -2, 'JUMP! JUMP! JUMP!', '', 's', 'dance'], [119, 124, -2, 'SING IT AGAIN!', '', 'h', 'dance']);
+        const COL = ['#ff4d6d', '#ff9f1c', '#ffd60a', '#2ec4b6', '#3a86ff', '#9b5de5'], FX = { n: ['🎵', '🎶', '⭐'], s: ['⭐', '✨', '🌟', '🎈'], c: ['👏', '✨', '🎵'], h: ['💖', '💗', '🎈', '🌈'] };
+        let t = 0, playing = false, last = 0, hasA = false, curSeg = -1, fxk = -1; const au = new Audio();
+        function setWord(w) { W.innerHTML = '';[...w].forEach((ch, i) => { const s = document.createElement('span'); if (ch == ' ') s.className = 'sp'; s.textContent = ch == ' ' ? '\u00a0' : ch; s.style.setProperty('--c', COL[i % 6]); s.style.setProperty('--dl', (i * .07) + 's'); W.appendChild(s) }); W.style.fontSize = Math.min(9.5, 100 / w.length * 1.35) + 'cqw' }
+        function render() {
+            const i = S.findIndex(s => t >= s[0] && t < s[1]); const sg = S[i >= 0 ? i : S.length - 1];
+            if (i !== curSeg) { curSeg = i; setWord(sg[3]); bee.style.left = (sg[2] >= 0 ? A[sg[2]].x > 50 ? A[sg[2]].x - 24 : A[sg[2]].x + 14 : [30, 15, 60][(sg[0] / 8 | 0) % 3]) + '%'; bee.style.top = (sg[2] >= 0 ? 10 : 18) + '%' }
+            const mode = sg[6], all = sg[2] === -2; st.classList.toggle('shake', mode === 'shake');
+            const seq = mode === 'seq' ? Math.min(4, Math.floor((t - sg[0]) / ((sg[1] - sg[0]) / 5))) : -1;
+            ael.forEach((d, k) => {
+                let c = 'animal '; const ft = sg[2] === k;
+                c += ft ? 'ft' : (t >= INTRO[k] || all) ? 'sm' : 'peek';
+                if (mode === 'dance' && !ft) c += ' dance';
+                if (ft && (mode === 'ask' || mode === 'wave')) c += ' ' + mode;
+                if (seq === k) c += ' pop'; if ((ft && mode !== 'ask') || seq === k) c += ' talk';
+                if (d.className !== c) d.className = c;
+                const bt = ft ? sg[4] : (seq === k ? A[k].s : ''); if (bt && A[k].b.textContent !== bt) A[k].b.textContent = bt; A[k].b.classList.toggle('on', !!bt)
+            });
+            const k = Math.floor(t * 2); if (playing && k !== fxk) { fxk = k; const e = document.createElement('div'); e.className = 'fx'; const set = FX[sg[5]]; e.textContent = set[Math.random() * set.length | 0]; e.style.left = Math.random() * 92 + '%'; e.style.bottom = '10cqw'; st.appendChild(e); setTimeout(() => e.remove(), 4000) }
+            sk.value = t; tm.textContent = Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0')
+        }
+        function frame(n) { if (playing) { if (hasA && !au.paused) t = au.currentTime; else t += (n - last) / 1000; if (t >= END) { t = END; pause(); } } last = n; render(); requestAnimationFrame(frame) }
+        function play() { if (t >= END) t = 0; playing = true; ov.style.display = 'none'; pp.textContent = '⏸'; if (hasA) { au.currentTime = t; au.play() } }
+        function pause() { playing = false; pp.textContent = '▶'; au.pause() }
+        const sk = document.getElementById('sk'), tm = document.getElementById('tm'), pp = document.getElementById('pp'), ov = document.getElementById('ov');
+        pp.onclick = () => playing ? pause() : play(); ov.onclick = play;
+        sk.oninput = () => { t = +sk.value; if (hasA) au.currentTime = t };
+        document.getElementById('af').onchange = e => { const f = e.target.files[0]; if (!f) return; au.src = URL.createObjectURL(f); hasA = true; au.currentTime = t; if (playing) au.play() };
+        document.getElementById('fs').onclick = () => document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+        setWord('ANIMAL FRIENDS'); requestAnimationFrame(frame);
+    </script>
+</body>
+
+</html>

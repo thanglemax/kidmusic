@@ -1,0 +1,96 @@
+{
+  "audio": "./inputs/happybunny.mp3",
+  "language": "en",
+  "segments": [
+    {
+      "text": "(upbeat music)",
+      "start": 0,
+      "end": 2.58
+    },
+    {
+      "text": "♪ Bunny bunny, hop hop hop hop hop hop hop hop ♪",
+      "start": 7.44,
+      "end": 11.02
+    },
+    {
+      "text": "♪ Bunny bunny hop hop hop ♪",
+      "start": 11.02,
+      "end": 12.76
+    },
+    {
+      "text": "♪ Happy little bunny clap clap clap your hands ♪",
+      "start": 12.76,
+      "end": 16.5
+    },
+    {
+      "text": "♪ Clap your hands clap clap clap your hands ♪",
+      "start": 16.5,
+      "end": 19.84
+    },
+    {
+      "text": "♪ Everybody clap jump jump up high up so high up so high ♪",
+      "start": 19.84,
+      "end": 24.84
+    },
+    {
+      "text": "♪ Jump jump jump up high ♪",
+      "start": 25.08,
+      "end": 26.88
+    },
+    {
+      "text": "♪ Everybody jump turn turn turn around ♪",
+      "start": 26.88,
+      "end": 30.58
+    },
+    {
+      "text": "♪ Round and round turn turn turn around ♪",
+      "start": 30.58,
+      "end": 33.86
+    },
+    {
+      "text": "♪ Everybody spin ♪",
+      "start": 33.86,
+      "end": 35.62
+    },
+    {
+      "text": "♪ Bunny bunny hop hop hop clap clap clap clap ♪",
+      "start": 35.62,
+      "end": 39.06
+    },
+    {
+      "text": "♪ Jump jump jump turn turn ♪",
+      "start": 39.06,
+      "end": 42.56
+    },
+    {
+      "text": "♪ Happy happy happy ♪",
+      "start": 42.56,
+      "end": 44.26
+    },
+    {
+      "text": "♪ La la la la la la la ♪",
+      "start": 44.26,
+      "end": 46.02
+    },
+    {
+      "text": "♪ La la la la la la la la ♪",
+      "start": 46.02,
+      "end": 49.48
+    },
+    {
+      "text": "♪ La la la la la la la la ♪",
+      "start": 49.48,
+      "end": 51.28
+    },
+    {
+      "text": "♪ We are happy ♪",
+      "start": 51.28,
+      "end": 53.22
+    },
+    {
+      "text": "(upbeat music)",
+      "start": 53.22,
+      "end": 55.8
+    }
+  ]
+}
